@@ -9,7 +9,7 @@
 #define SHA1_BLOCK_SIZE 64
 #define SHA1_HASH_SIZE 20
 
-// ---------------------- BASE32 ---------------------- //
+// --- BASE32 --- //
 int base32_char_to_val(char c) {
     if (c >= 'A' && c <= 'Z') return c - 'A';
     if (c >= '2' && c <= '7') return c - '2' + 26;
@@ -34,7 +34,7 @@ int base32_decode(const char *input, uint8_t *output) {
     return count;
 }
 
-// ---------------------- SHA1 ---------------------- //
+// --- SHA1 --- //
 uint32_t rol(uint32_t value, uint32_t bits) {
     return ((value << bits) | (value >> (32 - bits)));
 }
@@ -100,7 +100,7 @@ void sha1(const uint8_t *data, size_t len, uint8_t hash[SHA1_HASH_SIZE]) {
     }
 }
 
-// ---------------------- HMAC-SHA1 ---------------------- //
+// --- HMAC-SHA1 --- //
 void hmac_sha1(const uint8_t *key, size_t key_len,
                const uint8_t *msg, size_t msg_len,
                uint8_t hmac[SHA1_HASH_SIZE]) {
@@ -132,7 +132,7 @@ void hmac_sha1(const uint8_t *key, size_t key_len,
     sha1(outer_hash_input, SHA1_BLOCK_SIZE + SHA1_HASH_SIZE, hmac);
 }
 
-// ---------------------- TOTP ---------------------- //
+// --- TOTP --- //
 uint32_t generate_totp(const uint8_t *key, int key_len, uint64_t timestamp) {
     uint64_t counter = timestamp / 30;
     uint8_t msg[8];
@@ -153,11 +153,10 @@ uint32_t generate_totp(const uint8_t *key, int key_len, uint64_t timestamp) {
     return bin_code % 1000000;
 }
 
-// ---------------------- MAIN ---------------------- //
+// --- MAIN --- //
 int main() {
     char base32[100];
-    system("chcp 65001 >> out");
-    printf("Nhập mã Base32 secret: ");
+    printf("Nhap ma Base32 secret: ");
     scanf("%s", base32);
 
     uint8_t key[64];
@@ -166,7 +165,7 @@ int main() {
     while (1) {
         time_t now = time(NULL);
         uint32_t code = generate_totp(key, key_len, now);
-        printf("\r🔐 Mã TOTP: %06d | Reset sau %2ld giây  ", code, 30 - (now % 30));
+        printf("\r Ma TOTP: %06d | Reset sau %2ld giay  ", code, 30 - (now % 30));
         fflush(stdout);
         sleep(1);
     }
